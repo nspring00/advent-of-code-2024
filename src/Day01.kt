@@ -1,21 +1,36 @@
+import kotlin.math.abs
+
+typealias ParsedInput = Pair<List<Int>, List<Int>>
+
 fun main() {
-    fun part1(input: List<String>): Int {
-        return input.size
+    fun parseInput(input: List<String>): ParsedInput {
+        val list1 = mutableListOf<Int>()
+        val list2 = mutableListOf<Int>()
+        for (line in input) {
+            val split = line.split("   ")
+            list1.add(split[0].toInt())
+            list2.add(split[1].toInt())
+        }
+        return Pair(list1, list2)
     }
 
-    fun part2(input: List<String>): Int {
-        return input.size
+    fun part1(input: ParsedInput): Int {
+        val list1 = input.first.sorted()
+        val list2 = input.second.sorted()
+        return list1.zip(list2).sumOf { (n, m) -> abs(n - m) }
     }
 
-    // Test if implementation meets criteria from the description, like:
-    check(part1(listOf("test_input")) == 1)
+    fun part2(input: ParsedInput): Int {
+        val counts = input.second.groupingBy { it }.eachCount()
+        return input.first.sumOf { it * (counts[it] ?: 0) }
+    }
 
-    // Or read a large test input from the `src/Day01_test.txt` file:
-    val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
+    val testInput = parseInput(readInput("Day01_test"))
+    check(part1(testInput) == 11)
+    check(part2(testInput) == 31)
 
     // Read the input from the `src/Day01.txt` file.
-    val input = readInput("Day01")
+    val input = parseInput(readInput("Day01"))
     part1(input).println()
     part2(input).println()
 }

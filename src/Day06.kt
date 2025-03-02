@@ -11,8 +11,6 @@ enum class Direction06(val dx: Int, val dy: Int) {
 }
 
 fun main() {
-
-
     fun parseInput(input: List<String>): Input06 {
         val startY = input.indexOfFirst { line -> line.contains('^') }
         val startX = input[startY].indexOf('^')
@@ -56,13 +54,54 @@ fun main() {
         return visited.size
     }
 
+    fun part2CheckLoop(grid: Grid06, obstacle: Position06, startPos: Position06, startDir: Direction06): Boolean {
+        var pos = startPos.copy()
+        var dir = startDir
+        val visited = mutableSetOf(startPos to startDir)
 
-    fun part2(grid: Grid06, startPos: Position06): Int =
-        -1
+        while (true) {
+            val nextPos = move(pos, dir)
+            if (!isInBounds(grid, nextPos)) {
+                return false
+            }
+            if (grid[nextPos.y][nextPos.x] || nextPos == obstacle) {
+                dir = turnRight(dir)
+            } else {
+                pos = nextPos
+            }
+            if (pos to dir in visited) {
+                return true
+            }
+            visited.add(pos to dir)
+        }
+    }
+
+    fun part2(grid: Grid06, startPos: Position06): Int {
+        var pos = startPos.copy()
+        var dir = Direction06.UP
+        val obstacles = mutableSetOf<Position06>()
+
+        while (true) {
+            val nextPos = move(pos, dir)
+            if (nextPos != startPos && part2CheckLoop(grid, nextPos, startPos, Direction06.UP)) {
+                obstacles.add(nextPos)
+            }
+            if (!isInBounds(grid, nextPos)) {
+                break
+            }
+            if (grid[nextPos.y][nextPos.x]) {
+                dir = turnRight(dir)
+            } else {
+                pos = nextPos
+            }
+        }
+
+        return obstacles.size
+    }
 
     val testInput = parseInput(readInput("Day06_test"))
     check(part1(testInput.first, testInput.second) == 41)
-    check(part2(testInput.first, testInput.second) == -1)
+    check(part2(testInput.first, testInput.second) == 6)
 
     val input = parseInput(readInput("Day06"))
     val result1 = part1(input.first, input.second)
@@ -71,5 +110,5 @@ fun main() {
     println(result2)
 
     check(result1 == 4711)
-    check(result2 == -1)
+    check(result2 == 1562)
 }

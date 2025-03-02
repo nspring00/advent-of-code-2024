@@ -32,12 +32,56 @@ fun main() {
         return positions.size
     }
 
-    fun part2(input: Input08): Int = -1
+    fun part2(input: Input08): Int {
+        val positions = mutableSetOf<Position08>()
+
+        input.antennas.forEach { (_, antennas) ->
+            antennas.forEach { a1 ->
+                antennas.forEach inner@{ a2 ->
+                    if (a1 == a2) return@inner
+                    var dx = a1.x - a2.x
+                    var dy = a1.y - a2.y
+                    var x = a1.x + dx
+                    var y = a1.y + dy
+                    while (x >= 0 && y >= 0 && x < input.width && y < input.height) {
+                        positions.add(Position08(x = x, y = y))
+                        x += dx
+                        y += dy
+                    }
+                    dx = -dx
+                    dy = -dy
+                    x = a2.x - dx
+                    y = a2.y - dy
+                    while (x >= 0 && y >= 0 && x < input.width && y < input.height) {
+                        positions.add(Position08(x = x, y = y))
+                        x += dx
+                        y += dy
+                    }
+                }
+            }
+        }
+
+//        for (y in 0 until input.height) {
+//            for (x in 0 until input.width) {
+//                val exists = input.antennas.filter { (_, v) -> v.contains(Position08(x = x, y = y)) }
+//                if (exists.isNotEmpty()) {
+//                    print(exists.keys.first())
+//                } else if (Position08(x, y) in positions) {
+//                    print('#')
+//                } else {
+//                    print('.')
+//                }
+//            }
+//            println()
+//        }
+
+        return positions.size
+    }
 
     val testInput = parseInput(readInput("Day08_test"))
     val test1 = part1(testInput)
     check(test1 == 14)
-    check(part2(testInput) == -1)
+    check(part2(testInput) == 34)
 
     val input = parseInput(readInput("Day08"))
     val result1 = part1(input)
@@ -46,5 +90,5 @@ fun main() {
     println(result2)
 
     check(result1 == 413)
-    check(result2 == -1)
+    check(result2 == 1417)
 }

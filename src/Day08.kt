@@ -79,8 +79,7 @@ fun main() {
     }
 
     val testInput = parseInput(readInput("Day08_test"))
-    val test1 = part1(testInput)
-    check(test1 == 14)
+    check(part1(testInput) == 14)
     check(part2(testInput) == 34)
 
     val input = parseInput(readInput("Day08"))

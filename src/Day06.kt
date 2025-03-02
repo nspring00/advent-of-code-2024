@@ -4,10 +4,7 @@ typealias Grid06 = List<List<Boolean>>
 data class Position06(val x: Int, val y: Int)
 
 enum class Direction06(val dx: Int, val dy: Int) {
-    UP(0, -1),
-    DOWN(0, 1),
-    LEFT(-1, 0),
-    RIGHT(1, 0);
+    UP(0, -1), DOWN(0, 1), LEFT(-1, 0), RIGHT(1, 0);
 }
 
 fun main() {
@@ -20,7 +17,7 @@ fun main() {
         return grid to Position06(x = startX, y = startY)
     }
 
-    fun turnRight(dir: Direction06): Direction06 = when(dir) {
+    fun turnRight(dir: Direction06): Direction06 = when (dir) {
         Direction06.UP -> Direction06.RIGHT
         Direction06.RIGHT -> Direction06.DOWN
         Direction06.DOWN -> Direction06.LEFT
@@ -83,6 +80,8 @@ fun main() {
 
         while (true) {
             val nextPos = move(pos, dir)
+            // It's important to start checking from startPos, because the new obstacle could alter the path up to this point.
+            // Also, we need to (implicitly) check that nextPos is not already an obstacle to avoid duplicates.
             if (nextPos != startPos && part2CheckLoop(grid, nextPos, startPos, Direction06.UP)) {
                 obstacles.add(nextPos)
             }
